@@ -20,7 +20,7 @@ public struct RichTextKeyboardToolbarConfig {
     ///   - trailingActions: The trailing actions, by default `.dismissKeyboard`.
     public init(
         alwaysDisplayToolbar: Bool = false,
-        leadingActions: [RichTextAction] = [.undo, .redo],
+        leadingActions: [RichTextAction] = [.undo, .redo, .injectBulletPoint, .injectNumberedList],
         trailingActions: [RichTextAction] = [.dismissKeyboard]
     ) {
         self.alwaysDisplayToolbar = alwaysDisplayToolbar

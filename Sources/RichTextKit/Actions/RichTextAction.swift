@@ -41,6 +41,10 @@ public enum RichTextAction: Identifiable, Equatable, RichTextLabelValue {
 
     /// Select a range.
     case selectRange(NSRange)
+    
+    case injectBulletPoint
+    
+    case injectNumberedList
 
     /// Set the text alignment.
     case setAlignment(_ alignment: RichTextAlignment)
@@ -109,6 +113,8 @@ public extension RichTextAction {
         case .stepSuperscript(let val): .richTextStepSuperscript(val)
         case .toggleStyle(let val): val.icon
         case .undoLatestChange: .richTextUndo
+        case .injectBulletPoint: .richTextBulletedList
+        case .injectNumberedList: .richTextNumberedList
         }
     }
 
@@ -158,6 +164,8 @@ public extension RichTextAction {
         case .stepSuperscript(let steps): .actionStepSuperscript(steps)
         case .toggleStyle(let style): style.titleKey
         case .undoLatestChange: .actionUndoLatestChange
+        case .injectBulletPoint: .injectBulletPoint
+        case .injectNumberedList: .injectNumberedList
         }
     }
 }

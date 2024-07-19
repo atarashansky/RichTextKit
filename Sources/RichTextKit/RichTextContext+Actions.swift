@@ -40,6 +40,8 @@ public extension RichTextContext {
         case .stepSuperscript: true
         case .toggleStyle: true
         case .undoLatestChange: canUndoLatestChange
+        case .injectBulletPoint: true
+        case .injectNumberedList: true
         }
     }
 

@@ -28,6 +28,10 @@ extension RichTextCoordinator {
         case .redoLatestChange:
             textView.redoLatestChange()
             syncContextWithTextView()
+        case .injectBulletPoint:
+            textView.injectBulletPoint( style: .bulleted)
+        case .injectNumberedList:
+            textView.injectBulletPoint(style: .numbered)
         case .selectRange(let range):
             setSelectedRange(to: range)
         case .setAlignment(let alignment):

@@ -9,7 +9,9 @@
 import SwiftUI
 
 public extension Image {
-
+    static let richTextNumberedList = symbol("list.number")
+    static let richTextBulletedList = symbol("list.bullet")
+    
     static let richTextCopy = symbol("doc.on.clipboard")
     static let richTextDismissKeyboard = symbol("keyboard.chevron.compact.down")
     static let richTextEdit = symbol("square.and.pencil")

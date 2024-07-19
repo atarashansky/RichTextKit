@@ -208,7 +208,182 @@ open class RichTextView: UITextView, RichTextViewComponent {
         let length = offset(from: range.start, to: range.end)
         return NSRange(location: location, length: length)
     }
+   
+    open override func insertText(_ text: String) {
+        if !handleReturn(text) {
+            super.insertText(text)
+        } else {
+        }
+    }
 
+    open override func deleteBackward() {
+        if !handleDelete() {
+            super.deleteBackward()
+        }
+    }
+    
+    func handleReturn(_ text: String) -> Bool {
+        if !text.hasSuffix("\n") {
+            return false
+        }
+        let isBullet = currentLineIsBulletListItem()
+        let startsWithBullet = currentLineStartsWithBullet()
+        let isNumber = currentLineIsExactlyNumberedListItem()
+        let startsWithNumber = currentLineStartsWithNumberedListItem()
+        
+//        DispatchQueue.main.async {
+        if isBullet {
+            self.deleteCurrentLineUpToCursor()
+        } else if startsWithBullet {
+            self.injectBulletPoint(style: .bulleted)
+        } else if isNumber {
+            self.deleteCurrentLineUpToCursor()
+        } else if startsWithNumber {
+            self.injectBulletPoint(style: .numbered)
+        }
+//        }
+        
+        return (startsWithBullet || startsWithNumber)
+    }
+    
+    func handleDelete() -> Bool {
+        let isBullet = currentLineIsBulletListItem()
+        let isNumber = currentLineIsExactlyNumberedListItem()
+        
+//        DispatchQueue.main.async {
+        if isBullet {
+            self.deleteCurrentLineUpToCursor()
+        } else if isNumber {
+            self.deleteCurrentLineUpToCursor()
+        }
+//        }
+        return (isBullet || isNumber)
+    }
+
+    
+    func deleteCurrentLineUpToCursor() {
+        let cursorLocation = self.selectedRange.location
+        
+        // Get the current line up to the cursor
+        let currentLine = getCurrentLineUpToCursor()
+        
+        // Calculate the range to delete
+        let startOffset = cursorLocation - currentLine.count
+        let rangeToDelete = NSRange(location: startOffset, length: currentLine.count)
+        
+        // Create a mutable copy of the attributed string
+        let mutableAttributedString = NSMutableAttributedString(attributedString: self.attributedString)
+        
+        // Delete the range
+        mutableAttributedString.deleteCharacters(in: rangeToDelete)
+        
+        // Set the new attributed string
+        self.setRichText(mutableAttributedString)
+        
+        // Update the cursor position
+        self.moveInputCursor(to: startOffset)
+    }
+    
+    func currentLineIsExactlyNumberedListItem() -> Bool {
+        let currentLine = getCurrentLineUpToCursor()
+        let pattern = "^\\d{1,4}\\. $"
+        return currentLine.range(of: pattern, options: .regularExpression) != nil
+    }
+    
+    func currentLineStartsWithNumberedListItem() -> Bool {
+        let currentLine = getCurrentLineUpToCursor()
+        let pattern = "^\\d{1,4}\\. "
+        return currentLine.range(of: pattern, options: .regularExpression) != nil
+    }
+    
+    func currentLineIsBulletListItem() -> Bool {
+        let currentLine = getCurrentLineUpToCursor()
+        return currentLine == " • "
+    }
+    func currentLineStartsWithBullet() -> Bool {
+        let currentLine = getCurrentLineUpToCursor()
+        return currentLine.hasPrefix(" • ")
+    }
+    func getCurrentLineUpToCursor() -> String {
+        let fullString = self.attributedString.string
+        let cursorLocation = self.selectedRange.location
+
+        // Ensure the cursor location is valid
+        guard cursorLocation <= fullString.count else { return "" }
+
+        // Find the start of the current line
+        let startOfLineIndex = fullString[..<fullString.index(fullString.startIndex, offsetBy: cursorLocation)]
+            .lastIndex(of: "\n")?.utf16Offset(in: fullString) ?? 0
+
+        // Extract the part of the current line up to the cursor
+        let currentLine = String(fullString[fullString.index(fullString.startIndex, offsetBy: startOfLineIndex)..<fullString.index(fullString.startIndex, offsetBy: cursorLocation)])
+
+        return currentLine.trimmingCharacters(in: ["\u{000A}"])
+    }
+
+    func injectBulletPoint(style: BulletPointStyle = .bulleted) {
+        guard self.selectedRange.location <= self.attributedString.length else {
+            return
+        }
+        
+        let currentLocation = self.selectedRange.location
+        let mutableString = NSMutableAttributedString(attributedString: self.attributedString)
+        let fullString = mutableString.string
+        
+        // Determine if we need to insert a newline
+        let needsNewline = currentLocation > 0 && !fullString.prefix(currentLocation).hasSuffix("\n")
+        
+        let bulletPoint: String
+        switch style {
+        case .numbered:
+            let previousNumber = getPreviousNumberedListItemNumber()
+            let nextNumber = previousNumber + 1
+            bulletPoint = needsNewline ? "\n\(nextNumber). " : "\(nextNumber). "
+        case .bulleted:
+            bulletPoint = needsNewline ? "\n • " : " • "
+        }
+        
+        // Get the attributes at the current location
+        let attributes: [NSAttributedString.Key: Any]
+        if currentLocation > 0 {
+            attributes = mutableString.attributes(at: currentLocation - 1, effectiveRange: nil)
+        } else {
+            attributes = [:]
+        }
+        
+        // Create an attributed string with the bullet point and inherited attributes
+        let toInsert = NSAttributedString(string: bulletPoint, attributes: attributes)
+        
+        mutableString.insert(toInsert, at: currentLocation)
+        
+        self.setRichText(mutableString)
+        self.moveInputCursor(to: currentLocation + toInsert.length)
+    }
+    
+    private func getPreviousNumberedListItemNumber() -> Int {
+        let fullString = self.attributedString.string
+        let cursorLocation = self.selectedRange.location
+        
+        // Ensure the cursor location is valid
+        guard cursorLocation <= fullString.count else { return 0 }
+        
+        // Find the start of the previous line
+        let range = fullString.startIndex..<fullString.index(fullString.startIndex, offsetBy: cursorLocation)
+        let previousLineRange = fullString.range(of: "\n", options: .backwards, range: range)?.upperBound ?? fullString.startIndex
+        let previousLine = String(fullString[previousLineRange..<fullString.index(fullString.startIndex, offsetBy: cursorLocation)])
+        
+        // Check if the previous line is a numbered list item
+        if let match = previousLine.range(of: "^\\d+\\.", options: .regularExpression) {
+            let numberString = String(previousLine[match.lowerBound..<match.upperBound])
+            // Remove the trailing period
+            let numberWithoutPeriod = numberString.dropLast()
+            return Int(numberWithoutPeriod) ?? 0
+        }
+        
+        // If no previous numbered item found, start with 0
+        return 0
+    }
+    
     /// Try to redo the latest undone change.
     open func redoLatestChange() {
         undoManager?.redo()
@@ -397,3 +572,11 @@ public extension RichTextView {
     }
 }
 #endif
+
+
+enum BulletPointStyle {
+    case numbered
+    case bulleted
+    // Add more styles as needed
+}
+

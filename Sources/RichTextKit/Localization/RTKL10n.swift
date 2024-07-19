@@ -69,6 +69,9 @@ public enum RTKL10n: String, CaseIterable, Identifiable {
     pasteImages,
     pasteText,
     selectRange,
+    
+    injectBulletPoint,
+    injectNumberedList,
 
     setAttributedString,
 
