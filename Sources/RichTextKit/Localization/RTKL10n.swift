@@ -28,6 +28,7 @@ public enum RTKL10n: String, CaseIterable, Identifiable {
     underlineColor,
     strikethroughColor,
     strokeColor,
+    setTheme,
 
     actionCopy,
     actionDismissKeyboard,

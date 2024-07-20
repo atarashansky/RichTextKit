@@ -339,15 +339,15 @@ open class RichTextView: UITextView, RichTextViewComponent {
             bulletPoint = needsNewline ? "\n • " : " • "
         }
         
-        // Get the attributes at the current location
-        let attributes: [NSAttributedString.Key: Any]
-        if currentLocation > 0 {
-            attributes = mutableString.attributes(at: currentLocation - 1, effectiveRange: nil)
-        } else {
-            attributes = [:]
+        // Create a mutable dictionary for attributes
+        var attributes: [NSAttributedString.Key: Any] = [:]
+        
+        // Always set the font to ensure correct size
+        if let font = self.richTextFont {
+            attributes[.font] = font
         }
         
-        // Create an attributed string with the bullet point and inherited attributes
+        // Create an attributed string with the bullet point and correct attributes
         let toInsert = NSAttributedString(string: bulletPoint, attributes: attributes)
         
         mutableString.insert(toInsert, at: currentLocation)

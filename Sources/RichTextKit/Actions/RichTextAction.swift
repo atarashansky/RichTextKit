@@ -81,6 +81,12 @@ public enum RichTextAction: Identifiable, Equatable, RichTextLabelValue {
 
     /// Undo the latest change.
     case undoLatestChange
+    
+    /// Set theme
+    case setTheme(font: FontRepresentable = .systemFont(ofSize: 16),
+                  fontColor: ColorRepresentable = .textColor,
+                  backgroundColor: ColorRepresentable = .clear
+    )
 }
 
 public extension RichTextAction {
@@ -115,6 +121,7 @@ public extension RichTextAction {
         case .undoLatestChange: .richTextUndo
         case .injectBulletPoint: .richTextBulletedList
         case .injectNumberedList: .richTextNumberedList
+        case .setTheme: .richTextTheme
         }
     }
 
@@ -166,6 +173,7 @@ public extension RichTextAction {
         case .undoLatestChange: .actionUndoLatestChange
         case .injectBulletPoint: .injectBulletPoint
         case .injectNumberedList: .injectNumberedList
+        case .setTheme: .setTheme
         }
     }
 }

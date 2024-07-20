@@ -42,6 +42,7 @@ public extension RichTextContext {
         case .undoLatestChange: canUndoLatestChange
         case .injectBulletPoint: true
         case .injectNumberedList: true
+        case .setTheme: true
         }
     }
 

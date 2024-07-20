@@ -32,6 +32,8 @@ extension RichTextCoordinator {
             textView.injectBulletPoint(style: .bulleted)
         case .injectNumberedList:
             textView.injectBulletPoint(style: .numbered)
+        case .setTheme(let style):
+            textView.theme = RichTextView.Theme(font: style.font, fontColor: style.fontColor, backgroundColor: style.backgroundColor)
         case .selectRange(let range):
             setSelectedRange(to: range)
         case .setAlignment(let alignment):
