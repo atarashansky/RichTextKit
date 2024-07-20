@@ -231,7 +231,6 @@ open class RichTextView: UITextView, RichTextViewComponent {
         let isNumber = currentLineIsExactlyNumberedListItem()
         let startsWithNumber = currentLineStartsWithNumberedListItem()
         
-//        DispatchQueue.main.async {
         if isBullet {
             self.deleteCurrentLineUpToCursor()
         } else if startsWithBullet {
@@ -241,7 +240,6 @@ open class RichTextView: UITextView, RichTextViewComponent {
         } else if startsWithNumber {
             self.injectBulletPoint(style: .numbered)
         }
-//        }
         
         return (startsWithBullet || startsWithNumber)
     }
@@ -250,13 +248,11 @@ open class RichTextView: UITextView, RichTextViewComponent {
         let isBullet = currentLineIsBulletListItem()
         let isNumber = currentLineIsExactlyNumberedListItem()
         
-//        DispatchQueue.main.async {
         if isBullet {
             self.deleteCurrentLineUpToCursor()
         } else if isNumber {
             self.deleteCurrentLineUpToCursor()
         }
-//        }
         return (isBullet || isNumber)
     }
 
@@ -579,4 +575,3 @@ enum BulletPointStyle {
     case bulleted
     // Add more styles as needed
 }
-

@@ -29,7 +29,7 @@ extension RichTextCoordinator {
             textView.redoLatestChange()
             syncContextWithTextView()
         case .injectBulletPoint:
-            textView.injectBulletPoint( style: .bulleted)
+            textView.injectBulletPoint(style: .bulleted)
         case .injectNumberedList:
             textView.injectBulletPoint(style: .numbered)
         case .selectRange(let range):
