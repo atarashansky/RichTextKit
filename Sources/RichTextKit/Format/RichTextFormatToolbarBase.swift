@@ -92,6 +92,7 @@ extension RichTextFormatToolbarBase {
         }
     }
 
+    
     func colorPicker(
         for color: RichTextColor,
         context: RichTextContext

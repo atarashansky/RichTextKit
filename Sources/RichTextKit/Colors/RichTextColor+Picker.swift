@@ -59,11 +59,6 @@ public extension RichTextColor {
                 iconView
                 picker
                 if hasColors {
-                    HStack(spacing: spacing) {
-                        quickPickerDivider
-                        quickPickerButton(for: nil)
-                        quickPickerDivider
-                    }
                     quickPicker
                 }
             }
@@ -80,7 +75,19 @@ private extension RichTextColor.Picker {
 }
 
 public extension Color {
-
+    
+//    private func adjustBrightness(by percentage: Double) -> Color {
+//        let components = self.cgColor?.components
+//        let r = (components?[0] ?? 0.0) * 255
+//        let g = (components?[1] ?? 0.0) * 255
+//        let b = (components?[2] ?? 0.0) * 255
+//
+//        return Color(
+//            red: min(max(r + (r * percentage / 100), 0), 255) / 255.0,
+//            green: min(max(g + (g * percentage / 100), 0), 255) / 255.0,
+//            blue: min(max(b + (b * percentage / 100), 0), 255) / 255.0
+//        )
+//    }
     /// Get a curated list of quick color picker colors.
     static var quickPickerColors: [Self] {
         [
@@ -88,6 +95,21 @@ public extension Color {
             .red, .pink, .orange, .yellow,
             .indigo, .purple, .blue, .cyan, .teal, .mint,
             .green, .brown
+        ]
+    }
+    
+    static var quickPickerBackgroundColors: [Self] {
+        [
+            .init(red: 242 / 255.0, green: 242 / 255.0, blue: 247 / 255.0),
+            .init(red: 73 / 255.0, green: 118 / 255.0, blue: 186 / 255.0),
+            .init(red: 2 / 255.0, green: 113 / 255.0, blue: 128 / 255.0),
+            .init(red: 0 / 255.0, green: 173 / 255.0, blue: 198 / 255.0),
+            .init(red: 102 / 255.0, green: 137 / 255.0, blue: 128 / 255.0),
+            .init(red: 159 / 255.0, green: 190 / 255.0, blue: 175 / 255.0),
+            .init(red: 225 / 255.0, green: 150 / 255.0, blue: 170 / 255.0),
+            .init(red: 145 / 255.0, green: 144 / 255.0, blue: 172 / 255.0),
+            .init(red: 188 / 255.0, green: 157 / 255.0, blue: 69 / 255.0),
+            .init(red: 145 / 255.0, green: 65 / 255.0, blue: 70 / 255.0)
         ]
     }
 }
@@ -150,9 +172,9 @@ private extension RichTextColor.Picker {
     }
 }
 
-private struct ColorButtonStyle: ButtonStyle {
+public struct ColorButtonStyle: ButtonStyle {
 
-    func makeBody(configuration: Configuration) -> some View {
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .frame(width: 20, height: 20)
             .clipShape(Circle())

@@ -63,6 +63,7 @@ import SwiftUI
  For more information, see ``RichTextKeyboardToolbarConfig``
  and ``RichTextKeyboardToolbarStyle``.
  */
+
 public struct RichTextKeyboardToolbar<LeadingButtons: View, TrailingButtons: View, FormatSheet: View>: View {
 
     /**
@@ -112,14 +113,27 @@ public struct RichTextKeyboardToolbar<LeadingButtons: View, TrailingButtons: Vie
     public var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: style.itemSpacing) {
+                Button(action: presentFormatSheet) {
+                    Image(systemName: "f.cursive")
+                        .contentShape(Rectangle())
+                }
+                divider
+                RichTextStyle.ToggleStack(context: context)
+                Spacer()
+                RichTextFont.SizePickerStack(context: context)
+            }
+            .padding(10)
+            
+            HStack(spacing: style.itemSpacing) {
                 leadingViews
                 Spacer()
                 trailingViews
             }
             .padding(10)
+
         }
         .environment(\.sizeCategory, .medium)
-        .frame(height: style.toolbarHeight)
+        .frame(height: style.toolbarHeight * 2)
         .overlay(Divider(), alignment: .bottom)
         .accentColor(.primary)
         .background(
@@ -137,6 +151,7 @@ public struct RichTextKeyboardToolbar<LeadingButtons: View, TrailingButtons: Vie
             .prefersMediumSize()
         }
     }
+    
 }
 
 private extension View {
@@ -171,42 +186,45 @@ private extension RichTextKeyboardToolbar {
 
     @ViewBuilder
     var leadingViews: some View {
+        leadingButtons(StandardLeadingButtons())
+        
         RichTextAction.ButtonStack(
             context: context,
             actions: config.leadingActions,
             spacing: style.itemSpacing
         )
 
-        leadingButtons(StandardLeadingButtons())
 
-        divider
-
-        Button(action: presentFormatSheet) {
-            Image.richTextFormat
-                .contentShape(Rectangle())
-        }
-
-        RichTextStyle.ToggleStack(context: context)
-            .keyboardShortcutsOnly(if: isCompact)
-
-        RichTextFont.SizePickerStack(context: context)
-            .keyboardShortcutsOnly()
+    
     }
 
     @ViewBuilder
     var trailingViews: some View {
-        RichTextAlignment.Picker(selection: $context.textAlignment)
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 200)
-            .keyboardShortcutsOnly(if: isCompact)
-
-        trailingButtons(StandardTrailingButtons())
-
-        RichTextAction.ButtonStack(
-            context: context,
-            actions: config.trailingActions,
-            spacing: style.itemSpacing
-        )
+        
+        HStack {
+//            Spacer()
+//            RichTextAction.ButtonStack(
+//                context: context,
+//                actions: config.trailingActions,
+//                spacing: style.itemSpacing
+//            )
+//            divider
+//            Image(systemName: "paintpalette")
+//                .onTapGesture {
+//                    withAnimation {
+//                        isColorExpanded.toggle()
+//                    }
+//                }
+//            quickPicker
+//            divider
+            Spacer()
+            
+            trailingButtons(StandardTrailingButtons())
+            
+    //        RichTextAlignment.Picker(selection: $context.textAlignment)
+    //            .pickerStyle(.segmented)
+    //            .frame(maxWidth: 200)
+        }
     }
 }
 
