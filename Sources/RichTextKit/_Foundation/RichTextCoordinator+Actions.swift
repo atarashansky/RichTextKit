@@ -110,6 +110,8 @@ extension RichTextCoordinator {
         // Set the new attributed string
         textView.setRichText(newValue)
         
+        textView.scroll(to: NSRange(location: newValue.length, length: 0))
+
         // Sync the context and text binding
         syncWithTextView()
     }
