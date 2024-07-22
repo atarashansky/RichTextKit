@@ -106,9 +106,14 @@ extension RichTextCoordinator {
 
     func setAttributedString(to newValue: NSAttributedString?) {
         guard let newValue else { return }
+        
+        // Set the new attributed string
         textView.setRichText(newValue)
+        
+        // Sync the context and text binding
+        syncWithTextView()
     }
-
+    
     // TODO: This code should be handled by the component
     func setColor(_ color: RichTextColor, to val: ColorRepresentable) {
         var applyRange: NSRange?

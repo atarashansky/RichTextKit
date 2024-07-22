@@ -392,8 +392,17 @@ open class RichTextView: UITextView, RichTextViewComponent {
     }
 
     /// Set the rich text in the text view.
-    open func setRichText(_ text: NSAttributedString) {
-        attributedString = text
+    open func setRichText(_ newValue: NSAttributedString) {
+        let oldString = self.attributedString
+
+        // Register the undo operation
+        self.undoManager?.beginUndoGrouping()
+        self.undoManager?.registerUndo(withTarget: self, handler: { target in
+            target.attributedString = oldString
+        })
+        self.undoManager?.endUndoGrouping()
+        
+        attributedString = newValue
     }
 
     ///  Set the selected range in the text view.
@@ -402,7 +411,7 @@ open class RichTextView: UITextView, RichTextViewComponent {
     }
 
     /// Undo the latest change.
-    open func undoLatestChange() {
+    open func undoLatestChange() {        
         undoManager?.undo()
     }
 

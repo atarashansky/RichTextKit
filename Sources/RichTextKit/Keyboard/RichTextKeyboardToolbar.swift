@@ -186,15 +186,12 @@ private extension RichTextKeyboardToolbar {
 
     @ViewBuilder
     var leadingViews: some View {
-        leadingButtons(StandardLeadingButtons())
-        
         RichTextAction.ButtonStack(
             context: context,
             actions: config.leadingActions,
             spacing: style.itemSpacing
         )
-
-
+        leadingButtons(StandardLeadingButtons())
     
     }
 
