@@ -38,8 +38,8 @@ extension RichTextCoordinator {
             setSelectedRange(to: range)
         case .setAlignment(let alignment):
             textView.setRichTextAlignment(alignment)
-        case .setAttributedString(let string):
-            setAttributedString(to: string)
+        case .setAttributedString(let string, let scrollToLocation):
+            setAttributedString(to: string, scrollToLocation: scrollToLocation)
         case .setColor(let color, let newValue):
             setColor(color, to: newValue)
         case .setHighlightedRange(let range):
@@ -104,15 +104,19 @@ extension RichTextCoordinator {
         )
     }
 
-    func setAttributedString(to newValue: NSAttributedString?) {
+    func setAttributedString(to newValue: NSAttributedString?, scrollToLocation: Int? = nil) {
         guard let newValue else { return }
         
         // Set the new attributed string
         textView.setRichText(newValue)
         
-        textView.scroll(to: NSRange(location: newValue.length, length: 0))
+        if scrollToLocation == nil {
+            textView.scroll(to: NSRange(location: newValue.length, length: 0))
+        } else if let scrollToLoc = scrollToLocation{
+            textView.moveInputCursor(to: scrollToLoc)
+            textView.scrollRangeToVisible(NSRange(location: scrollToLoc, length: newValue.length - scrollToLoc))
+        }
 
-        // Sync the context and text binding
         syncWithTextView()
     }
     

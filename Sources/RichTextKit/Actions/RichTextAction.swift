@@ -50,7 +50,7 @@ public enum RichTextAction: Identifiable, Equatable, RichTextLabelValue {
     case setAlignment(_ alignment: RichTextAlignment)
 
     /// Set the entire attributed string.
-    case setAttributedString(NSAttributedString)
+    case setAttributedString(NSAttributedString, Int?)
 
     // Change background color
     case setColor(RichTextColor, ColorRepresentable)

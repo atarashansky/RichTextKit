@@ -145,7 +145,7 @@ public extension RichTextContext {
     func resetSelectedRange() {
         selectedRange = NSRange(location: 0, length: 0)
     }
-
+    
     /// Set a new range and start editing.
     func selectRange(_ range: NSRange) {
         isEditingText = true
@@ -158,9 +158,9 @@ public extension RichTextContext {
     }
 
     /// Set the attributed string to a new rich text.
-    func setAttributedString(to string: NSAttributedString) {
+    func setAttributedString(to string: NSAttributedString, scrollToLocation: Int? = nil) {
         let mutable = NSMutableAttributedString(attributedString: string)
-        actionPublisher.send(.setAttributedString(mutable))
+        actionPublisher.send(.setAttributedString(mutable, scrollToLocation))
     }
 
     /// Set ``isEditingText`` to `false`.
