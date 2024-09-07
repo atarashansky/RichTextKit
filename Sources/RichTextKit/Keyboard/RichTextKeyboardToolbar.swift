@@ -126,7 +126,7 @@ public struct RichTextKeyboardToolbar<LeadingButtons: View, TrailingButtons: Vie
 
     
         .environment(\.sizeCategory, .medium)
-        .frame(height: style.toolbarHeight * 2)
+        .frame(height: style.toolbarHeight)
         .overlay(Divider(), alignment: .bottom)
         .accentColor(.primary)
         .background(
