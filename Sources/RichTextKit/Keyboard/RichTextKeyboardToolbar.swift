@@ -117,6 +117,7 @@ public struct RichTextKeyboardToolbar<LeadingButtons: View, TrailingButtons: Vie
                 Image(systemName: "f.cursive")
                     .contentShape(Rectangle())
             }
+            .padding(.leading, 10)
             divider
             leadingViews
             Spacer()
