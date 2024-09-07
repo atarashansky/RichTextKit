@@ -111,27 +111,20 @@ public struct RichTextKeyboardToolbar<LeadingButtons: View, TrailingButtons: Vie
     private var style
 
     public var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: style.itemSpacing) {
-                Button(action: presentFormatSheet) {
-                    Image(systemName: "f.cursive")
-                        .contentShape(Rectangle())
-                }
-                divider
-                RichTextStyle.ToggleStack(context: context)
-                Spacer()
-                RichTextFont.SizePickerStack(context: context)
-            }
-            .padding(10)
-            
-            HStack(spacing: style.itemSpacing) {
-                leadingViews
-                Spacer()
-                trailingViews
-            }
-            .padding(10)
 
+        HStack(spacing: style.itemSpacing) {
+            Button(action: presentFormatSheet) {
+                Image(systemName: "f.cursive")
+                    .contentShape(Rectangle())
+            }
+            divider
+            leadingViews
+            Spacer()
+            trailingViews
         }
+        .padding(10)
+
+    
         .environment(\.sizeCategory, .medium)
         .frame(height: style.toolbarHeight * 2)
         .overlay(Divider(), alignment: .bottom)
